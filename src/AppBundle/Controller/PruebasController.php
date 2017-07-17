@@ -13,10 +13,6 @@ class PruebasController extends Controller
         
         //return $this->redirect($request->getBaseUrl()."/hello-world?hola=true");
         
-        var_dump($request->query->get("hola"));
-        var_dump($request->get("hola-post"));
-        die();
-        
         return $this->render('AppBundle:Pruebas:index.html.twig', [
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
             'texto' => $name." - ".$page
