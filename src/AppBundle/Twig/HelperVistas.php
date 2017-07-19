@@ -9,12 +9,13 @@ class HelperVistas extends \Twig_Extension{
        );
     }
     
-    public function generateTable($num_colmns,$num_rows){
+    public function generateTable($resultSet){
         $table="<table class_'table' border=1>";
-        for($i=0; $i<$num_rows; $i++){
+        for($i=0; $i<count($resultSet); $i++){
             $table.="<tr>";
-            for($f=0; $f<$num_colmns; $f++){
-                $table.="<td>COLUMNA</td>";
+            for($f=0; $f<count($resultSet[$i]); $f++){
+                $resultSet_values= array_values($resultSet[$i]);
+                $table.="<td>".$resultSet_values[$f]."</td>";
             }
             $table.="<tr>";
         }

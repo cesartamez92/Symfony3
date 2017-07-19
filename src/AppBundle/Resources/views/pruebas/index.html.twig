@@ -24,7 +24,11 @@
     </ul>
     {%endif%}
     {%set fecha =date("-2 days","Europe/Madrid") %}
-    {{dump(fecha)}}
+    {%set texto ="            fasfd    ," %}
+    {{fecha.date|date('d-m-Y')}}
+    
+    {{texto|trim(",")}}
+    
     <hr/>
     
     {{include ('AppBundle:pruebas:partial.html.twig')}}
@@ -36,5 +40,9 @@
         {{i}}<br/>
     {%endfor%}
     <hr/>
-    {{ generateTable(5,7)| raw }}
+    {{ generateTable(productos)| raw }}
+    
+    <hr/>
+    
+    {{"cadena de texto"|addText(2)}}
 {%endblock%}
