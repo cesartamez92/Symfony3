@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Curso;
 
 class PruebasController extends Controller
 {
@@ -27,5 +28,78 @@ class PruebasController extends Controller
             'productos' => $productos,
             'fruta' => $fruta
         ]);
+    }
+    
+    public function createAction(){
+        
+        $curso = new Curso();
+        $curso->setTitulo("Curso de Symfony3");
+        $curso->setDescripcion("Curso completo de Symfony3");
+        $curso->setPrecio(80);
+        
+        //A partir de la version 3.0.6 se descontinua el getEntityManager y se usa getManager
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($curso);
+        $flush=$em->flush();
+        
+        if($flush!= null){
+            echo "El curso no se ha creado bien!!";
+        } else {
+            echo "El curso se ha creado correctamente";
+        }
+        
+        die();
+    }
+    
+    public function readAction(){
+        $em = $this->getDoctrine()->getEntityManager();
+        $cursos_repo = $em->getRepository("AppBundle:Curso");
+        $cursos = $cursos_repo->findAll();
+        
+        foreach($cursos as $curso){
+            echo $curso->getTitulo()."<br/>";
+            echo $curso->getDescripcion()."<br/>";
+            echo $curso->getPrecio()."<br/><hr/>";
+        }
+        
+        die();
+    }
+    
+    public function updateAction($id,$titulo,$descripcion,$precio){
+        $em = $this->getDoctrine()->getEntityManager();
+        $cursos_repo = $em->getRepository("AppBundle:Curso");
+        
+        $curso = $cursos_repo->find($id);
+        $curso->setTitulo($titulo);
+        $curso->setDescripcion($descripcion);
+        $curso->setPrecio($precio);
+        
+        $em->persist($curso);
+        $flush=$em->flush();
+        
+        if($flush!=null){
+            echo "El Curso no se ha actualizado!";
+        } else {
+            echo "El curso se ha actualizado correctamente";
+        }
+        
+        die();
+    }
+    
+    public function deleteAction($id){
+        $em = $this->getDoctrine()->getEntityManager();
+        $cursos_repo = $em->getRepository("AppBundle:Curso");
+        
+        $curso = $cursos_repo->find($id);
+        $em->remove($curso);
+        $flush=$em->flush();
+        
+        if($flush!=null){
+            echo "El Curso no se ha eliminado!!";
+        } else {
+            echo "El curso se ha eliminado correctamente";
+        }
+        
+        die();
     }
 }
