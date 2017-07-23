@@ -56,11 +56,15 @@ class PruebasController extends Controller
         $cursos_repo = $em->getRepository("AppBundle:Curso");
         $cursos = $cursos_repo->findAll();
         
-        foreach($cursos as $curso){
-            echo $curso->getTitulo()."<br/>";
-            echo $curso->getDescripcion()."<br/>";
-            echo $curso->getPrecio()."<br/><hr/>";
-        }
+        $curso_ochenta=$cursos_repo->findOneByPrecio(80);
+        echo $curso_ochenta->getTitulo();
+        
+        
+//        foreach($cursos as $curso){
+//            echo $curso->getTitulo()."<br/>";
+//            echo $curso->getDescripcion()."<br/>";
+//            echo $curso->getPrecio()."<br/><hr/>";
+//        }
         
         die();
     }
@@ -98,6 +102,32 @@ class PruebasController extends Controller
             echo "El Curso no se ha eliminado!!";
         } else {
             echo "El curso se ha eliminado correctamente";
+        }
+        
+        die();
+    }
+    
+    public function nativeSqlAction(){
+        $em = $this->getDoctrine()->getEntityManager();
+        $cursos_repo = $em->getRepository("AppBundle:Curso");
+//        $db = $em->getConnection();
+//        $query = "SELECT * from cursos";
+//        $stmt = $db->prepare($query);
+//        $params = array();
+//        $stmt->execute($params);
+//        
+//        $cursos = $stmt->fetchAll();
+        
+//        $query = $em->createQuery("
+//                SELECT c FROM AppBundle:Curso c
+//                WHERE c.precio > :precio
+//                ")->setParameter("precio","79");
+//        $cursos = $query->getResult();
+        
+        $cursos = $cursos_repo->getCursos();
+        
+        foreach($cursos as $curso){
+            echo $curso->getTitulo()."<br/>";
         }
         
         die();
