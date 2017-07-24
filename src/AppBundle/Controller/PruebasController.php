@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\CursoType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -131,5 +132,35 @@ class PruebasController extends Controller
         }
         
         die();
+    }
+
+    public function formAction(Request $request){
+        $curso = new Curso;
+        $form = $this->createForm(CursoType::class);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()){
+            $status = "Formulario Valido";
+            $data = array(
+                "titulo" => $form->get("titulo")->getData(),
+                "descripcion" => $form->get("descripcion")->getData(),
+                "descripcion" => $form->get("descripcion")->getData(),
+                "precio" => $form->get("precio")->getData()
+            );
+        } else {
+            $status = null;
+            $data = null;
+        }
+
+        return $this->render('AppBundle:Pruebas:form.html.twig',array(
+            'form' => $form->createView(),
+            'status' => $status,
+            'data' => $data
+        ));
+    }
+
+    public function validarEmailAction($email){
+
     }
 }
