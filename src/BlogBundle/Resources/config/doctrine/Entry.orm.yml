@@ -47,7 +47,7 @@ BlogBundle\Entity\Entry:
             targetEntity: Category
             cascade: {  }
             fetch: LAZY
-            mappedBy: null
+            mappedBy: entry
             inversedBy: null
             joinColumns:
                 category_id:
@@ -65,7 +65,7 @@ BlogBundle\Entity\Entry:
             orphanRemoval: false
     oneToMany:
         entryTag:
-            targetEntity: EntryTag
+            targetEntity: EntryTags
             mappedBy: entry
             cascade: ["persist"]
     lifecycleCallbacks: {  }
