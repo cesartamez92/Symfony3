@@ -17,47 +17,58 @@ class UserController extends Controller
         $this->session = new Session();
     }
 
-    public function loginAction(Request $request){
+    public function loginAction(Request $request)
+    {
         $authenticationUtils = $this->get("security.authentication_utils");
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
         $user = new User;
-        $form = $this->createForm(UserType::class,$user);
+        $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $user = new User;
-                $user->setName($form->get("name")->getData());
-                $user->setEmail($form->get("email")->getData());
-                $user->setPassword($form->get("password")->getData());
-                $user->setSurname($form->get("surname")->getData());
-                $user->setRole("ROLE_USER");
-                $user->setImagen(null);
-
                 $em = $this->getDoctrine()->getEntityManager();
-                $em->persist($user);
-                $flush = $em->flush();
+                $user_repo = $em->getRepository("BlogBundle:User");
+                $user = $user_repo->findOneBy(array("email" => $form->get("email")->getData()));
+                if (count($user) == 0) {
+                    $user = new User;
+                    $user->setName($form->get("name")->getData());
+                    $user->setEmail($form->get("email")->getData());
 
-                if ($flush == null) {
-                    $status = "El usuario se ha creado correctamente";
+                    $factory = $this->get("security.encoder_factory");
+                    $encoder = $factory->getEncoder($user);
+                    $password = $encoder->encodePassword($form->get("password")->getData(), $user->getSalt());
+
+                    $user->setPassword($password);
+                    $user->setSurname($form->get("surname")->getData());
+                    $user->setRole("ROLE_USER");
+                    $user->setImagen(null);
+
+                    $em = $this->getDoctrine()->getEntityManager();
+                    $em->persist($user);
+                    $flush = $em->flush();
+
+                    if ($flush == null) {
+                        $status = "El usuario se ha creado correctamente";
+                    } else {
+                        $status = "No te has registrado correctamente";
+                    }
                 } else {
                     $status = "No te has registrado correctamente";
                 }
-
             } else {
-                $status = "No te has registrado correctamente";
+                $status = "El usuario ya existe";
             }
 
             $this->session->getFlashBag()->add("status", $status);
         }
-
-        return $this->render("BlogBundle:user:login.html.twig",array(
-           "error"=> $error,
-           "last_username" => $lastUsername,
-           "form" => $form->createView()
+        return $this->render("BlogBundle:user:login.html.twig", array(
+            "error" => $error,
+            "last_username" => $lastUsername,
+            "form" => $form->createView()
         ));
     }
 }
